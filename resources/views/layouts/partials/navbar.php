@@ -43,7 +43,7 @@
         <div class="nav-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="hero-profile-snippet">
-                    <a href="/hero/<?php echo urlencode($_SESSION['username']); ?>" class="nav-link-simple">
+                    <a href="/hero" class="nav-link-simple">
                         <?php echo ($_SESSION['role'] === 'admin') ? '🧙 OVERSEER' : '👤 MY PROFILE'; ?>
                     </a>
                 </div>
