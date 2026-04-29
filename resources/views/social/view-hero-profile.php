@@ -63,12 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
                 } else { throw new Exception("Current password incorrect!"); }
             }
 
-            $_SESSION['show_success_modal'] = true;
+                        $_SESSION['show_success_modal'] = true;
             header("Location: /hero");
             exit();
         }
-    } catch (PDOException $e) {
-        die("Hero Profile DB Error: " . $e->getMessage());
+    } catch (Throwable $e) {
+        die("Hero Profile Error: " . $e->getMessage());
     }
 }
 
