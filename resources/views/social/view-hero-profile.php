@@ -67,10 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
             header("Location: /hero");
             exit();
         }
-    } catch (Exception $e) {
-        $_SESSION['error'] = $e->getMessage();
-        header("Location: " . ($is_own_profile ? "/hero?status=error" : "/hero/" . urlencode($target_username) . "?status=error"));
-        exit();
+    } catch (PDOException $e) {
+        die("Hero Profile DB Error: " . $e->getMessage());
     }
 }
 
