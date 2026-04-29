@@ -9,7 +9,7 @@ $url = rtrim($_GET['url'] ?? 'index', '/');
 $segments = explode('/', $url);
 $baseRoute = $segments[0] === 'index' ? 'home' : $segments[0];
 
-$protectedRoutes = ['dashboard', 'quests', 'guild', 'battle'];
+$protectedRoutes = ['dashboard', 'quests', 'guild', 'battle', 'hero'];
 $adminRoutes = ['admin-dashboard', 'admin-quests', 'admin-quiz-types', 'admin-users'];
 $guestOnlyRoutes = ['login', 'register', 'guest-dashboard'];
 

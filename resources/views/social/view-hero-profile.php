@@ -14,9 +14,10 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
     exit();
 }
 
-$target_username = $_GET['target_hero'] ?? $_SESSION['username'];
-$is_own_profile = $target_username === $_SESSION['username'];
-$user_id = $_SESSION['user_id'];
+$target_username = $_GET['target_hero'] ?? null;
+$user_id = (int) $_SESSION['user_id'];
+$session_username = (string) ($_SESSION['username'] ?? '');
+$is_own_profile = $target_username === null || $target_username === '' || $target_username === $session_username;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
     if (!$is_own_profile) {
@@ -60,19 +61,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
             }
 
             $_SESSION['show_success_modal'] = true;
-            header("Location: /hero/" . urlencode($_SESSION['username']));
+            header("Location: /hero");
             exit();
         }
     } catch (Exception $e) {
         $_SESSION['error'] = $e->getMessage();
-        header("Location: /hero/" . urlencode($target_username) . "?status=error");
+        header("Location: " . ($is_own_profile ? "/hero?status=error" : "/hero/" . urlencode($target_username) . "?status=error"));
         exit();
     }
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT id, username, avatar FROM users WHERE username = ? LIMIT 1");
-    $stmt->execute([$target_username]);
+    if ($is_own_profile) {
+        $stmt = $pdo->prepare("SELECT id, username, avatar FROM users WHERE id = ? LIMIT 1");
+        $stmt->execute([$user_id]);
+    } else {
+        $stmt = $pdo->prepare("SELECT id, username, avatar FROM users WHERE username = ? LIMIT 1");
+        $stmt->execute([$target_username]);
+    }
     $main_stats = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$main_stats) {
