@@ -4,20 +4,27 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once __DIR__ . '/../../../includes/app.php';
 require_once __DIR__ . '/../../../data/database.php';
 
-// 1. Capture the filter and handle URL encoding for C#
-$filter = isset($_GET['lang']) ? $_GET['lang'] : 'ALL';
+$allowedFilters = ['ALL', 'C', 'C#', 'JAVA', 'PHP'];
+$requestedFilter = $_GET['lang'] ?? 'ALL';
+$filter = is_string($requestedFilter) ? strtoupper(trim($requestedFilter)) : 'ALL';
 
-try {
-    if ($filter === 'ALL') {
-        $heroes = cq_get_global_leaderboard_rows($pdo, 50);
-    } else {
-        $heroes = cq_get_language_leaderboard_rows($pdo, $filter, 50);
-    }
-
-} catch (PDOException $e) {
-    $heroes = [];
-    error_log("Leaderboard Filter Error: " . $e->getMessage());
+if (!in_array($filter, $allowedFilters, true)) {
+    $filter = 'ALL';
 }
+
+if (!isset($heroes) || !is_array($heroes)) {
+    try {
+        if ($filter === 'ALL') {
+            $heroes = cq_get_global_leaderboard_rows($pdo, 50);
+        } else {
+            $heroes = cq_get_language_leaderboard_rows($pdo, $filter, 50);
+        }
+    } catch (Throwable $e) {
+        $heroes = [];
+        error_log("Hall of Heroes Error: " . $e->getMessage());
+    }
+}
+
 app_render_document_start('CodeQuest | Hall of Heroes', [
     '/assets/css/layout-dashboard.css',
 ], 'dashboard-layout');
@@ -30,27 +37,27 @@ app_include('layout/background-effects.php');
             <h3 style="font-family: 'Chelsea Market'; color: var(--ts-red);">Filter Scrolls</h3>
             <div class="divider" style="margin: 15px 0;"></div>
             
-            <a href="heroes?lang=ALL" class="nav-link-simple" 
+            <a href="/heroes?lang=ALL" class="nav-link-simple" 
                style="display:block; <?php echo ($filter == 'ALL') ? 'color: var(--ts-red); font-weight: bold;' : ''; ?>">
                🌍 ALL LANGUAGES
             </a>
 
-            <a href="heroes?lang=C" class="nav-link-simple" 
+            <a href="/heroes?lang=C" class="nav-link-simple" 
                style="display:block; <?php echo ($filter == 'C') ? 'color: var(--ts-red); font-weight: bold;' : ''; ?>">
                ⚙️ C MASTERS
             </a>
 
-            <a href="heroes?lang=C%23" class="nav-link-simple" 
+            <a href="/heroes?lang=C%23" class="nav-link-simple" 
                style="display:block; <?php echo ($filter == 'C#') ? 'color: var(--ts-red); font-weight: bold;' : ''; ?>">
                🎯 C# PALADINS
             </a>
 
-            <a href="heroes?lang=JAVA" class="nav-link-simple" 
+            <a href="/heroes?lang=JAVA" class="nav-link-simple" 
                style="display:block; <?php echo ($filter == 'JAVA') ? 'color: var(--ts-red); font-weight: bold;' : ''; ?>">
                ☕ JAVA KNIGHTS
             </a>
 
-            <a href="heroes?lang=PHP" class="nav-link-simple" 
+            <a href="/heroes?lang=PHP" class="nav-link-simple" 
                style="display:block; <?php echo ($filter == 'PHP') ? 'color: var(--ts-red); font-weight: bold;' : ''; ?>">
                🐘 PHP WIZARDS
             </a>

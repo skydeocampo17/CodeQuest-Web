@@ -13,7 +13,7 @@ try {
     // Return as JSON for the JavaScript to inject into the feed
     echo json_encode($activities);
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     http_response_code(500);
     // You can check your browser's network tab to see this exact error if it fails
     echo json_encode(['error' => 'The royal scribes failed to fetch the logs: ' . $e->getMessage()]);

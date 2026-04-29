@@ -1,8 +1,13 @@
 <?php
 require_once __DIR__ . '/../../data/database.php';
 
-// 1. Get filter and handle the C# URL encoding trap
-$filter = $_GET['lang'] ?? 'ALL';
+$allowedFilters = ['ALL', 'C', 'C#', 'JAVA', 'PHP'];
+$requestedFilter = $_GET['lang'] ?? 'ALL';
+$filter = is_string($requestedFilter) ? strtoupper(trim($requestedFilter)) : 'ALL';
+
+if (!in_array($filter, $allowedFilters, true)) {
+    $filter = 'ALL';
+}
 
 try {
     if ($filter !== 'ALL') {
@@ -10,7 +15,7 @@ try {
     } else {
         $heroes = cq_get_global_leaderboard_rows($pdo, 50);
     }
-} catch (PDOException $e) {
+} catch (Throwable $e) {
     $heroes = [];
-    error_log("Database Error: " . $e->getMessage()); 
+    error_log("Leaderboard Logic Error: " . $e->getMessage());
 }

@@ -369,11 +369,14 @@ if (!function_exists('cq_get_user_mastery_rows')) {
             $xpColumn = cq_user_mastery_xp_column($pdo, $masteriesTable);
             if ($safeLanguagesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language_id') && $xpColumn !== null) {
                 $safeXpColumn = cq_safe_identifier($xpColumn);
+                $levelExpression = cq_column_exists($pdo, $masteriesTable, 'mastery_level')
+                    ? "COALESCE(um.mastery_level, FLOOR(um.{$safeXpColumn} / 1000) + 1)"
+                    : "FLOOR(um.{$safeXpColumn} / 1000) + 1";
                 $stmt = $pdo->prepare("
                     SELECT
                         pl.name AS lang,
                         um.{$safeXpColumn} AS current_xp,
-                        FLOOR(um.{$safeXpColumn} / 1000) + 1 AS level
+                        {$levelExpression} AS level
                     FROM `{$safeMasteriesTable}` um
                     JOIN `{$safeLanguagesTable}` pl ON um.language_id = pl.id
                     WHERE um.user_id = ?
@@ -456,6 +459,33 @@ if (!function_exists('cq_get_language_leaderboard_rows')) {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
+        if ($masteriesTable !== null && $languagesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language_id')) {
+            $safeMasteriesTable = cq_safe_identifier($masteriesTable);
+            $safeLanguagesTable = cq_safe_identifier($languagesTable);
+            $xpColumn = cq_user_mastery_xp_column($pdo, $masteriesTable);
+
+            if ($xpColumn !== null) {
+                $safeXpColumn = cq_safe_identifier($xpColumn);
+                $stmt = $pdo->prepare("
+                    SELECT u.username, {$titleExpression} AS rank_title, um.{$safeXpColumn} AS score
+                    FROM users u
+                    JOIN `{$safeMasteriesTable}` um ON u.id = um.user_id
+                    JOIN `{$safeLanguagesTable}` pl ON um.language_id = pl.id
+                    WHERE pl.name = :lang
+                      AND {$publicUserFilter['sql']}
+                    ORDER BY um.{$safeXpColumn} DESC, u.id ASC
+                    LIMIT :limit
+                ");
+                $stmt->bindValue(':lang', $lang);
+                foreach ($publicUserFilter['params'] as $key => $value) {
+                    $stmt->bindValue($key, $value, PDO::PARAM_INT);
+                }
+                $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+        }
+
         if (cq_table_exists($pdo, 'user_stats') && $languagesTable !== null) {
             $safeLanguagesTable = cq_safe_identifier($languagesTable);
             $stmt = $pdo->prepare("
@@ -507,6 +537,7 @@ if (!function_exists('cq_get_social_feed_rows')) {
     {
         $masteriesTable = cq_user_masteries_table($pdo);
         $languagesTable = cq_languages_table($pdo);
+        $publicUserFilter = cq_get_public_user_filter($pdo, 'u');
 
         if ($masteriesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language') && cq_column_exists($pdo, $masteriesTable, 'language_xp')) {
             $safeMasteriesTable = cq_safe_identifier($masteriesTable);
@@ -520,19 +551,66 @@ if (!function_exists('cq_get_social_feed_rows')) {
                 JOIN users u ON um.user_id = u.id
             ";
 
+            $conditions = [$publicUserFilter['sql']];
+
             if ($lang !== 'ALL') {
-                $query .= " WHERE um.language = :lang";
+                $conditions[] = "um.language = :lang";
             }
 
+            $query .= " WHERE " . implode(' AND ', $conditions);
             $query .= " ORDER BY last_updated DESC LIMIT :limit OFFSET :offset";
             $stmt = $pdo->prepare($query);
             if ($lang !== 'ALL') {
                 $stmt->bindValue(':lang', $lang);
             }
+            foreach ($publicUserFilter['params'] as $key => $value) {
+                $stmt->bindValue($key, $value, PDO::PARAM_INT);
+            }
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        if ($masteriesTable !== null && $languagesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language_id')) {
+            $safeMasteriesTable = cq_safe_identifier($masteriesTable);
+            $safeLanguagesTable = cq_safe_identifier($languagesTable);
+            $xpColumn = cq_user_mastery_xp_column($pdo, $masteriesTable);
+            $updatedColumn = cq_column_exists($pdo, $masteriesTable, 'updated_at') ? 'um.updated_at' : 'NOW()';
+
+            if ($xpColumn !== null) {
+                $safeXpColumn = cq_safe_identifier($xpColumn);
+                $query = "
+                    SELECT
+                        u.username,
+                        pl.name AS language,
+                        um.{$safeXpColumn} AS score,
+                        {$updatedColumn} AS last_updated
+                    FROM `{$safeMasteriesTable}` um
+                    JOIN users u ON um.user_id = u.id
+                    JOIN `{$safeLanguagesTable}` pl ON um.language_id = pl.id
+                ";
+
+                $conditions = [$publicUserFilter['sql']];
+
+                if ($lang !== 'ALL') {
+                    $conditions[] = "pl.name = :lang";
+                }
+
+                $query .= " WHERE " . implode(' AND ', $conditions);
+                $query .= " ORDER BY last_updated DESC LIMIT :limit OFFSET :offset";
+                $stmt = $pdo->prepare($query);
+                if ($lang !== 'ALL') {
+                    $stmt->bindValue(':lang', $lang);
+                }
+                foreach ($publicUserFilter['params'] as $key => $value) {
+                    $stmt->bindValue($key, $value, PDO::PARAM_INT);
+                }
+                $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+                $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
 
         if (cq_table_exists($pdo, 'user_stats') && $languagesTable !== null) {
@@ -548,14 +626,20 @@ if (!function_exists('cq_get_social_feed_rows')) {
                 JOIN `{$safeLanguagesTable}` pl ON us.language_id = pl.id
             ";
 
+            $conditions = [$publicUserFilter['sql']];
+
             if ($lang !== 'ALL') {
-                $query .= " WHERE pl.name = :lang";
+                $conditions[] = "pl.name = :lang";
             }
 
+            $query .= " WHERE " . implode(' AND ', $conditions);
             $query .= " ORDER BY us.last_activity DESC LIMIT :limit OFFSET :offset";
             $stmt = $pdo->prepare($query);
             if ($lang !== 'ALL') {
                 $stmt->bindValue(':lang', $lang);
+            }
+            foreach ($publicUserFilter['params'] as $key => $value) {
+                $stmt->bindValue($key, $value, PDO::PARAM_INT);
             }
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -579,14 +663,20 @@ if (!function_exists('cq_get_social_feed_rows')) {
             JOIN `{$safeLanguagesTable}` pl ON l.language_id = pl.id
         ";
 
+        $conditions = [$publicUserFilter['sql']];
+
         if ($lang !== 'ALL') {
-            $query .= " WHERE pl.name = :lang";
+            $conditions[] = "pl.name = :lang";
         }
 
+        $query .= " WHERE " . implode(' AND ', $conditions);
         $query .= " ORDER BY l.last_updated DESC LIMIT :limit OFFSET :offset";
         $stmt = $pdo->prepare($query);
         if ($lang !== 'ALL') {
             $stmt->bindValue(':lang', $lang);
+        }
+        foreach ($publicUserFilter['params'] as $key => $value) {
+            $stmt->bindValue($key, $value, PDO::PARAM_INT);
         }
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
