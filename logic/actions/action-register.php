@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
-        $defaultTypeId = cq_get_default_user_type_id($pdo);
+        $defaultTypeId = 2; // default = player
         if ($defaultTypeId === null) {
             throw new RuntimeException("No default user type is configured in user_types.");
         }

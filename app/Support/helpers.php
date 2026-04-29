@@ -294,6 +294,31 @@ if (!function_exists('cq_get_default_user_type_id')) {
     }
 }
 
+if (!function_exists('cq_ensure_default_user_type_id')) {
+    function cq_ensure_default_user_type_id(PDO $pdo): ?int
+    {
+        $defaultTypeId = cq_get_default_user_type_id($pdo);
+        if ($defaultTypeId !== null) {
+            return $defaultTypeId;
+        }
+
+        $table = cq_user_types_table($pdo);
+        if ($table === null) {
+            return null;
+        }
+
+        $safeTable = cq_safe_identifier($table);
+
+        try {
+            $stmt = $pdo->prepare("INSERT INTO `{$safeTable}` (name) VALUES (?)");
+            $stmt->execute(['Hero']);
+            return (int) $pdo->lastInsertId();
+        } catch (Throwable) {
+            return cq_get_default_user_type_id($pdo);
+        }
+    }
+}
+
 if (!function_exists('cq_get_user_role_name')) {
     function cq_get_user_role_name(PDO $pdo, int $typeId): string
     {
