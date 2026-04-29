@@ -1,0 +1,6 @@
+.fb-sidebar-left,
+.fb-sidebar-right {
+    min-height: 400px;
+    height: fit-content;
+}
+

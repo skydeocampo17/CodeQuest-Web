@@ -1,0 +1,30 @@
+# Environment files
+.env
+.env.local
+.env.*
+!.env.example
+
+# Local / host-generated files
+.codex
+.private/
+.trash/
+*.bk
+*.sql
+
+# Dependencies
+node_modules/
+vendor/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Temp / cache
+*.tmp
+*.cache

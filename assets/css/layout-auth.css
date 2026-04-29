@@ -1,0 +1,415 @@
+/* ========================================= */
+/* AUTHENTICATION LAYOUT (REGISTER/LOGIN)    */
+/* ========================================= */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.quest-container {
+    display: flex;
+    width: 95%;            /* Responsive width for mobile */
+    max-width: 950px;      /* Fixed limit for desktop */
+    min-height: 600px;
+    margin: 50px auto;     /* AUTO centers the container horizontally */
+    border: 6px solid var(--ts-outline);
+    border-radius: 16px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 12px 12px 0px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    background-color: var(--ts-stone); /* Fallback background */
+}
+
+/* Ensure the welcome page (index.php) stays compact */
+.welcome-layout .quest-container {
+    max-width: 650px;      /* Smaller width for the simple welcome box */
+}
+
+/* --- SIDEBAR (LEFT - PARCHMENT) --- */
+.quest-sidebar {
+    flex: 0.9;
+    background-color: var(--ts-parchment);
+    background-image: 
+        url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23paper)" opacity="0.12"/></svg>'), 
+        radial-gradient(circle at center, transparent 30%, rgba(101, 50, 15, 0.15) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    border-right: 6px solid var(--ts-outline);
+}
+
+.quest-sidebar, 
+.quest-form-section {
+    min-width: 0; 
+    background-repeat: repeat;
+    background-size: auto, cover; /* 'auto' for the SVG noise, 'cover' for the gradient */
+}
+
+.sidebar-logo {
+    max-width: 180px;
+    margin-bottom: 25px;
+    filter: drop-shadow(4px 4px 0px rgba(37, 51, 66, 0.1));
+}
+
+.sidebar-title {
+    font-family: 'Chelsea Market', cursive;
+    font-size: 2.2rem;
+    color: var(--ts-red);
+    text-shadow: var(--ts-header-shadow); 
+    margin: 0; 
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+/* --- FORM SECTION (RIGHT - STONE) --- */
+.quest-form-section {
+    flex: 1.2;
+    padding: 10px 60px;
+    background-color: var(--ts-stone);
+    background-image: 
+        url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="rock"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23rock)" opacity="0.1"/></svg>'),
+        radial-gradient(circle at center, transparent 10%, rgba(37, 51, 66, 0.6) 120%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: inset 10px 0 20px rgba(0,0,0,0.2);
+}
+
+.form-title {
+    font-family: 'Chelsea Market', cursive;
+    color: var(--ts-white);
+    font-size: 2.4rem;
+    margin-bottom: 30px;
+    text-shadow: var(--ts-header-shadow);
+    text-align: center;
+}
+
+.auth-form-container {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    font-family: 'Chelsea Market', monospace;
+    color: var(--ts-white);
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    text-shadow: 1.5px 1.5px 0px var(--ts-outline);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(37, 51, 66, 0.6);
+    border: 3px solid var(--ts-outline);
+    border-radius: 8px;
+    color: var(--ts-white);
+    font-family: 'Chelsea Market', cursive;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    border-color: var(--ts-red);
+    background: rgba(37, 51, 66, 0.8);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+.form-row .form-group {
+    flex: 1; /* Makes both password boxes take up equal space */
+}
+
+/* On very small screens, drop back to one column */
+@media (max-width: 500px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* --- CUSTOM PIXEL CHECKBOX --- */
+.form-check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-left: 35px;
+    min-height: 30px;
+    margin-bottom: 25px;
+}
+
+.form-check-input {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px; 
+    height: 25px;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.form-check-label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 22px;
+    width: 22px;
+    background-color: rgba(37, 51, 66, 0.6);
+    border: 3px solid var(--ts-outline);
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.form-check-label::after {
+    content: "⚔️";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    font-size: 14px;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2;
+}
+
+.form-check-input:checked ~ .form-check-label::after { transform: translateY(-50%) scale(1); }
+.form-check-input:checked ~ .form-check-label::before { border-color: var(--ts-red); background-color: var(--ts-stone-dark); }
+
+.form-check-label {
+    pointer-events: none; 
+    font-family: 'Chelsea Market', monospace;
+    color: var(--ts-white);
+    font-size: 1.2rem;
+    line-height: 1.2;
+    user-select: none;
+}
+
+.form-check-label .link-span {
+    pointer-events: auto; 
+    color: var(--ts-red);
+    text-decoration: underline;
+    cursor: pointer;
+    position: relative;
+    z-index: 11;
+}
+
+.form-check-input {
+    z-index: 10; 
+}
+
+/* --- BUTTONS --- */
+.btn-group-custom { display: flex; gap: 15px; margin-top: 25px; }
+.btn-pixel { flex: 1; justify-content: center; }
+.btn-signin { background-color: var(--ts-stone-dark); }
+
+.link-span {
+    color: var(--ts-red);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* ========================================= */
+/* SOCIAL AUTHENTICATION (GOOGLE)            */
+/* ========================================= */
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    font-family: 'VT323', monospace;
+    color: var(--ts-white);
+    opacity: 0.6;
+}
+
+.auth-divider { display: flex; align-items: center; text-align: center; margin: 15px 0; font-family: 'VT323', monospace; color: var(--ts-white); opacity: 0.6; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 2px solid var(--ts-outline); }
+
+.auth-divider:not(:empty)::before { margin-right: .5em; }
+.auth-divider:not(:empty)::after { margin-left: .5em; }
+
+.btn-google {
+    background-color: #ffffff !important;
+    color: #444 !important;
+    text-shadow: none !important; 
+    border: 3px solid var(--ts-outline) !important;
+    
+    /* FIX: Match the height and padding of .btn-pixel */
+    width: 100%;
+    min-height: 44px; /* Standard professional button height */
+    padding: 8px 15px !important; 
+    font-size: 0.9rem;
+    margin-top: 5px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+}
+
+.btn-google:hover {
+    background-color: #f1f1f1 !important;
+}
+
+.btn-icon-small {
+    width: 18px; /* Slightly smaller for better vertical centering */
+    height: 18px;
+    image-rendering: pixelated; 
+}
+
+/* Ensure the Google button shadow matches your stone theme */
+.btn-google.btn-pixel {
+    box-shadow: 0px 4px 0px var(--ts-outline), 0px 8px 12px rgba(0,0,0,0.25);
+}
+
+/* ========================================= */
+/* BATTLE LOG ALERTS (ERROR MESSAGES)        */
+/* ========================================= */
+
+.quest-alert {
+    background-color: var(--ts-red);
+    background-image: linear-gradient(rgba(255,255,255,0.1) 0%, transparent 100%);
+    border: 3px solid var(--ts-outline);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    color: var(--ts-white);
+    font-family: 'Chelsea Market', monospace;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0px 4px 0px rgba(0,0,0,0.3);
+    
+    /* Shake animation for impact */
+    animation: alertShake 0.4s ease-in-out;
+}
+
+.alert-icon {
+    font-size: 1.4rem;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+@keyframes alertShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* --- MODAL & SCROLLBAR --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-title {
+    text-align: center;
+}
+
+.modal-content {
+    background-color: var(--ts-parchment);
+    border: 6px solid var(--ts-outline);
+    width: 700px;
+    max-width: 90%;
+    padding: 40px;
+    position: relative;
+    border-radius: 12px;
+}
+
+.modal-body {
+    font-family: 'Chelsea Market', monospace;
+    font-size: var(--fz-lg);
+    line-height: 1.6;
+    color: #4a3728;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 15px;
+}
+
+.modal-body p {
+    margin-bottom: 20px;
+}
+
+.modal-body li {
+    margin-bottom: 15px;
+}
+
+.modal-body li:last-child {
+    margin-bottom: 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px; /* Space between the scroll and the button */
+}
+
+.modal-full-btn {
+    width: auto; /* Overriding the 100% width */
+    min-width: 200px; /* Keeps it looking like a solid stone plaque */
+}
+
+.modal-body::-webkit-scrollbar { width: 10px; }
+.modal-body::-webkit-scrollbar-thumb { background: var(--ts-stone-dark); border: 2px solid var(--ts-outline); border-radius: 4px; }
+.modal-body::-webkit-scrollbar-thumb:hover { background: var(--ts-red); }
+.modal-body::-webkit-scrollbar-thumb:hover { background-color: var(--ts-red); }
+
+/* --- RESPONSIVE FIX: Stack Sidebar & Form --- */
+@media (max-width: 850px) {
+    .quest-container {
+        flex-direction: column;
+        width: 100%;
+        min-height: auto;
+        margin-top: 20px;
+    }
+
+    .quest-sidebar {
+        flex: none;
+        padding: 30px;
+        border-right: none;
+        border-bottom: 6px solid var(--ts-outline); /* Move border to bottom */
+    }
+
+    .quest-form-section {
+        flex: none;
+        padding: 40px 20px;
+    }
+}
+
+/* --- GOOGLE BUTTON SHADOW SYNC --- */
+.btn-google.btn-pixel {
+    /* Ensure it doesn't lose its shadow when we override the background */
+    box-shadow: 0px 4px 0px var(--ts-outline), 0px 8px 12px rgba(0,0,0,0.25) !important;
+}
+
+/* --- FOCUS RING ACCESSIBILITY --- */
+.form-control:focus {
+    box-shadow: 0 0 0 4px rgba(184, 51, 75, 0.3); /* Subtle red glow */
+}

@@ -1,0 +1,107 @@
+.admin-question-page .quest-question-cell {
+    max-width: 100%;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.admin-question-page .lang-icon-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: var(--ts-outline);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Chelsea Market', cursive;
+    font-size: 1.2rem;
+}
+
+.admin-question-page .quest-briefing-copy {
+    font-family: 'VT323', monospace;
+    font-size: 1.6rem;
+    color: #2f3542;
+    margin: 10px 0 20px;
+    line-height: 1.3;
+}
+
+.admin-question-page .quest-briefing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.admin-question-page .quest-briefing-label,
+.admin-question-page .admin-form-label {
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+
+.admin-question-page .quest-briefing-label-success {
+    color: #6ab04c;
+}
+
+.admin-question-page .quest-briefing-label-danger {
+    color: #eb4d4b;
+}
+
+.admin-question-page .quest-briefing-text {
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    color: #1e272e;
+    font-weight: bold;
+}
+
+.admin-question-page .quest-briefing-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    color: #1e272e;
+}
+
+.admin-question-page .admin-form-label {
+    display: block;
+    color: #57606f;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.admin-question-page .admin-form-label-success {
+    color: #6ab04c;
+}
+
+.admin-question-page .admin-form-label-danger {
+    color: #eb4d4b;
+}
+
+.admin-question-page .admin-form-textarea {
+    height: 100px;
+}
+
+.admin-question-page .admin-wrong-answers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+.admin-question-page .admin-status-copy {
+    font-family: 'VT323', monospace;
+    font-size: 1.6rem;
+    margin: 20px 0;
+    color: #2f3542;
+}
+
+.admin-question-page .hidden {
+    display: none !important;
+}
+
+@media (max-width: 992px) {
+    .admin-question-page .quest-briefing-grid,
+    .admin-question-page .admin-wrong-answers-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

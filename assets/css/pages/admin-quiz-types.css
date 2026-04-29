@@ -1,0 +1,40 @@
+.admin-quiz-types-page .simple-table td {
+    padding: 15px;
+    color: #d2dae2;
+    font-size: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-quiz-types-page .trial-name-cell {
+    font-weight: bold;
+    color: #48dbfb;
+}
+
+.admin-quiz-types-page .search-button {
+    width: 100%;
+}
+
+.admin-quiz-types-page .type-form {
+    margin-top: 20px;
+}
+
+.admin-quiz-types-page .type-modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-quiz-types-page .type-modal-actions .admin-primary-button {
+    flex: 1;
+}
+
+.admin-quiz-types-page .type-modal-input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0 20px;
+    border: 3px solid #2f3542;
+    border-radius: 4px;
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    box-sizing: border-box;
+}
+

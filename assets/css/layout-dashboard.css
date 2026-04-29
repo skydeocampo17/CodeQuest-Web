@@ -1,0 +1,461 @@
+/* ========================================= */
+/* UNIVERSAL DASHBOARD LAYOUT                */
+/* ========================================= */
+
+body.dashboard-layout {
+    display: block; 
+    overflow-y: auto;
+    min-height: 100vh;
+    padding-top: 70px;
+    background-image: url('../img/background/background.png') !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-position: center !important;
+}
+
+.dashboard-body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center; /* Keeps the entire layout centered when zooming out */
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 20px;
+    padding: 20px;
+    /* Removed the height calc to allow the natural page scroll for better stability */
+    min-height: calc(100vh - 70px);
+}
+
+/* --- TEXT OUTLINE MAGIC --- */
+.text-outline-black {
+    text-shadow: 
+        -1.5px -1.5px 0 #000,  
+         1.5px -1.5px 0 #000,
+        -1.5px  1.5px 0 #000,
+         1.5px  1.5px 0 #000,
+         3px 3px 0px rgba(0,0,0,0.6);
+         letter-spacing: 1px;
+}
+
+/* --- FIXED BACKGROUND ELEMENTS FOR DASHBOARD --- */
+.dashboard-layout .cloud-layer-1, 
+.dashboard-layout .cloud-layer-2, 
+.dashboard-layout .cloud-layer-3, 
+.dashboard-layout .cloud-layer-4, 
+.dashboard-layout .cloud-layer-5, 
+.dashboard-layout .cloud-layer-6,
+.dashboard-layout .lang-fragment {
+    position: fixed !important; /* 📌 Pins them to the screen, not the page */
+    z-index: -1;                /* 🧱 Ensures they stay behind sidebars */
+}
+
+/* --- SIDEBARS (Synced Height & Width) --- */
+.fb-sidebar-left, .fb-sidebar-right {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 90px !important;    
+    
+    flex: 0 0 300px; 
+    width: 300px;
+    min-width: 300px;
+    
+    min-height: 550px; 
+    height: fit-content;
+    
+    background: var(--ts-parchment);
+    border: 4px solid var(--ts-outline);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+    z-index: 10;
+    
+    word-wrap: break-word;
+    overflow-x: hidden;
+}
+
+.fb-sidebar-right { 
+    background: var(--ts-stone); 
+    color: white; display: flex;
+    flex-direction: column;
+}    
+
+.fb-sidebar-right .hero-list {
+    flex-grow: 1; /* This pushes everything below it to the bottom */
+}
+.fb-feed-center {
+    flex: 1;
+    /* Anchors the center so it doesn't get too small or too wide */
+    min-width: 500px; 
+    max-width: 760px; 
+}
+
+/* --- SIDEBAR LISTS (Recent Feats) --- */
+.hero-list ul {
+    background: rgba(0, 0, 0, 0.2); /* Creates a dark inset box */
+    border: 2px solid var(--ts-outline);
+    border-radius: 8px;
+    padding: 15px !important;
+    box-shadow: inset 3px 3px 0px rgba(0,0,0,0.3);
+}
+
+.hero-list li {
+    padding-bottom: 8px;
+    margin-bottom: 8px !important;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.hero-list li:last-child {
+    border-bottom: none;
+    margin-bottom: 0 !important;
+    padding-bottom: 0;
+}
+
+/* --- FEED CARDS --- */
+.feed-card {
+    background: var(--ts-white);
+    border: 4px solid var(--ts-outline);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 6px 6px 0 var(--ts-outline);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    /* 🟢 NEW: Transition for smooth hovering */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feed-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 10px 10px 0 var(--ts-outline);
+}
+
+/* Language Borders */
+.card-java { border-left: 10px solid #f89820; }
+.card-php { border-left: 10px solid #777bb4; }
+.card-csharp { border-left: 10px solid #178600; }
+.card-c { border-left: 10px solid #a8b9cc; }
+
+/* --- TYPOGRAPHY & STATS --- */
+.stat-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* 🟢 Keeps text vertically centered */
+    margin-bottom: 12px; /* 🟢 Slightly more breathing room */
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem; /* 🟢 Bumped up slightly for legibility */
+    letter-spacing: 1px; /* 🟢 Spreads the pixel font out */
+}
+
+/* --- PROGRESS BARS --- */
+.progress-container {
+    height: 10px; 
+    background: var(--ts-outline); 
+    border-radius: 4px; 
+    overflow: hidden; 
+    margin-bottom: 15px;
+}
+.progress-bar { height: 100%; background: var(--ts-grass); transition: width 0.6s ease; }
+
+/* Guest/Locked Variation */
+.guest-mode .progress-bar {
+    background: #666; /* Grayed out for guests */
+    width: 20% !important; /* Fixed width to look "unfilled" */
+    opacity: 0.3;
+}
+
+.guest-mode .progress-container::after {
+    content: "🔒 LOCKED";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: white;
+    font-family: 'VT323';
+}
+
+/* --- CLOUDS --- */
+@keyframes leftToRight { from { transform: translateX(-400px); } to { transform: translateX(100vw); } }
+.cloud-1 { top: 15%; animation: leftToRight 45s linear infinite; }
+
+/* --- SIDEBAR NAV LINKS --- */
+.fb-sidebar-left .nav-link-simple {
+    color: #2c1e14; /* Deep ink/brown for parchment readability */
+    font-family: 'Chelsea Market', monospace;
+    font-size: 1.3rem;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin-bottom: 5px;
+}
+
+.fb-sidebar-left .nav-link-simple:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* Subtle highlight */
+    color: var(--ts-red); /* Turns red on hover for that "selected" feel */
+    transform: translateX(5px);
+}
+
+/* ========================================= */
+/* FEED HEADER & RETRO FILTER BUTTONS        */
+/* ========================================= */
+
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* 🎯 Vertically centers the title and buttons */
+    border-bottom: 2px dashed var(--ts-stone-dark);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    gap: 15px;
+    flex-wrap: wrap; /* Safety for small screens */
+}
+
+.feed-header h2 {
+    font-family: 'Chelsea Market', cursive;
+    margin: 0;
+    color: white;
+    font-size: 1.8rem;
+    text-shadow: 2px 2px var(--ts-outline);
+    white-space: nowrap; /* Prevents title from splitting to two lines */
+}
+
+.filter-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 0; /* 🛑 Removed negative margin to ensure perfect centering */
+}
+
+.filter-btn {
+    background: var(--ts-stone);
+    color: white;
+    padding: 8px 15px;
+    border: 3px solid var(--ts-outline);
+    border-radius: 6px;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    cursor: pointer;
+    /* 🧱 Thicker 4px shadow from the old version */
+    box-shadow: 4px 4px 0 var(--ts-outline);
+    transition: all 0.1s;
+    text-transform: uppercase;
+}
+
+/* 🖱️ Hover state (maintained for polish) */
+.filter-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* ⚔️ Active & Pressed State */
+.filter-btn:active, 
+.filter-btn.active { 
+    background: var(--ts-red) !important;
+    color: white;
+    /* 📌 The specific '2px' shift from your old code */
+    transform: translate(2px, 2px); 
+    box-shadow: 2px 2px 0 var(--ts-outline); 
+}
+
+/* ========================================= */
+/* HERO PROFILE LAYOUT                       */
+/* ========================================= */
+
+.profile-wrapper {
+    display: flex;
+    gap: 25px;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+}
+    
+.avatar-box {
+    width: 150px;
+    height: 150px;
+    background: var(--ts-stone-dark);
+    border: 4px solid var(--ts-outline);
+    border-radius: 12px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 4px 4px 0 rgba(0,0,0,0.2);
+}
+
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.badge-slot {
+    aspect-ratio: 1;
+    background: rgba(37, 51, 66, 0.4);
+    border: 2px dashed var(--ts-outline);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.badge-slot.earned {
+    background: var(--ts-parchment);
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3), inset 0 0 10px rgba(255,215,0,0.2);
+    cursor: pointer;
+}
+
+.badge-slot.earned:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+@media (max-width: 850px) {
+    .profile-wrapper { flex-direction: column; align-items: center; }
+    .profile-left, .profile-right { width: 100%; max-width: 500px; }
+}
+
+/* ========================================= */
+/* RESPONSIVE REFINEMENTS (Mobile Armor)     */
+/* ========================================= */
+
+@media (max-width: 1100px) {
+    .dashboard-body {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .fb-sidebar-left, 
+    .fb-sidebar-right, 
+    .fb-feed-center {
+        width: 100%;
+        max-width: 362px;
+        min-width: 0;
+        position: relative !important;
+        top: 0 !important;
+        margin-bottom: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .fb-sidebar-left,
+    .fb-sidebar-right {
+        flex: 0 0 clamp(315px, 34vw, 400px);
+        width: clamp(315px, 34vw, 400px);
+        min-width: 0;
+    }
+    
+    .fb-sidebar-left, .fb-sidebar-right {
+        flex: 1 1 100%;
+    }
+
+    /* Stack filter buttons nicely on small screens */
+    .filter-container {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* ========================================= */
+/* FORM CONTROLS (Settings & Inputs)         */
+/* ========================================= */
+
+.form-group {
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    background: var(--ts-white);
+    border: 3px solid var(--ts-outline);
+    border-radius: 6px;
+    font-family: 'VT323', monospace; 
+    font-size: 1.2rem;
+    color: var(--ts-outline);
+    
+    /* Creates a "pressed into the parchment" look */
+    box-shadow: inset 3px 3px 0px rgba(0,0,0,0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+/* 🖱️ When the hero clicks inside the textbox */
+.form-control:focus {
+    outline: none; 
+    border-color: var(--ts-red); 
+    background: #ffffff;
+    /* Adds a red glow outside, keeps the shadow inside */
+    box-shadow: 0 0 0 4px rgba(184, 51, 75, 0.2), inset 3px 3px 0px rgba(0,0,0,0.05);
+    transform: translateY(-2px);
+}
+
+/* Fix for the dropdown specifically so it matches */
+select.form-control {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23253342" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: 98%;
+    background-position-y: center;
+    cursor: pointer;
+}
+
+/* 📜 Modal Description Scroll Box */
+.modal-scroll-box {
+    max-height: 250px; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    /* Ensures the scrollbar has a little breathing room from the text */
+    padding-right: 15px !important; 
+}
+/* ========================================= */
+/* MODAL HEADER & CLOSE BUTTON               */
+/* ========================================= */
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed #2f3542;
+}
+
+.modal-header h3 {
+    font-family: 'Chelsea Market', cursive;
+    font-size: 1.6rem;
+    color: #2f3542;
+    margin: 0;
+}
+
+.close-modal {
+    background: #ff7675;
+    border: 3px solid #d63031;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: bold;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;           /* Prevents it from collapsing */
+    transition: transform 0.1s;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    transform: scale(1.1);
+    filter: brightness(1.1);
+}
+
+.close-modal:active {
+    transform: translate(2px, 2px);
+}

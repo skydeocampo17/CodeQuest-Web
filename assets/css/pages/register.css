@@ -1,0 +1,8 @@
+.modal-error {
+    border-color: var(--ts-red) !important;
+}
+
+.modal-error .modal-title {
+    color: var(--ts-red);
+}
+

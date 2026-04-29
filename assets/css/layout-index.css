@@ -1,0 +1,230 @@
+/* ========================================= */
+/* INDEX / WELCOME PAGE SPECIFIC STYLES      */
+/* ========================================= */
+
+@keyframes floatCloud { 0%, 100% { transform: translateX(0px); } 50% { transform: translateX(35px); } }
+@keyframes driftLeftToRight { 0% { left: -400px; } 100% { left: 100vw; } }
+@keyframes driftRightToLeft { 0% { right: -500px; } 100% { right: 100vw; } }
+
+/* --- 2. Main Layout Containers --- */
+.quest-container-2col {
+    width: 600px; 
+    max-width: 95%; 
+    min-height: 500px;
+    display: flex; 
+    position: relative; 
+    z-index: 10;
+    filter: drop-shadow(var(--ts-box-shadow));
+    
+    /* Nudge upward to account for slimmer 56px navbar */
+    margin-top: -40px; 
+    transform: none !important; 
+}
+
+.stone-left {
+    flex: 1;
+    background-color: var(--ts-stone);
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="rock"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23rock)" opacity="0.15"/></svg>'), 
+                      radial-gradient(circle at center, transparent 10%, rgba(37, 51, 66, 0.6) 120%);
+    border: 6px solid var(--ts-outline); border-right: none; border-radius: 16px 0 0 16px;
+    padding: 50px 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative;
+    box-shadow: inset 0px 8px 15px rgba(255, 255, 255, 0.2), inset 0px -10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.parchment-right {
+    flex: 1;
+    background-color: var(--ts-parchment);
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23paper)" opacity="0.12"/></svg>'), 
+                      radial-gradient(circle at center, transparent 30%, rgba(101, 50, 15, 0.3) 90%, rgba(60, 25, 5, 0.8) 100%);
+    border: 6px solid var(--ts-outline); border-radius: 0 16px 16px 0;
+    padding: 50px; display: flex; justify-content: center; align-items: center; position: relative;
+    box-shadow: inset 0px 0px 40px rgba(101, 50, 15, 0.4);
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    box-shadow: inset 10px 0px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow at the join */
+    min-width: 120px;        /* Prevents it from disappearing on small screens */
+    order: 2;
+}
+
+/* --- 3. Typography & Visuals --- */
+.hero-title { font-family: 'Chelsea Market', cursive; font-size: calc(var(--fz-xl) * 1.4); line-height: 1.2; color: var(--ts-white); text-shadow: var(--ts-header-shadow); margin: 0; }
+.hero-title span { color: var(--ts-red); }
+.welcome-subtitle { font-family: 'Chelsea Market', cursive; color: var(--ts-outline); font-size: var(--fz-lg); line-height: 1.5; margin: 20px 0 40px 0; }
+.divider { width: 60%; height: 4px; background-color: var(--ts-stone-dark); margin: 25px auto; border-radius: 2px; opacity: 0.3; }
+
+/* Intro Animations */
+.fade-in-up { animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; transform: translateY(20px); }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+.floating-logo { animation: gentleBob 4s ease-in-out infinite; max-width: 200px; width: 100%; filter: drop-shadow(4px 4px 0px rgba(37, 51, 66, 0.6)); }
+@keyframes gentleBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* --- 4. Interactive Enhancements --- */
+.typewriter-container { display: inline-block; }
+.welcome-subtitle {
+    font-family: 'Chelsea Market', cursive;
+    color: var(--ts-outline);
+    font-size: var(--fz-lg);
+    margin: 20px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid var(--ts-red);
+    animation: typing 3s steps(30, end), blink-caret .75s step-end infinite;
+}
+@keyframes typing { from { width: 0 } to { width: 100% } }
+@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--ts-red); } }
+
+/* --- 5. QUEST STATS BAR (Stone Command Plaque) --- */
+.quest-stats-bar {
+    position: fixed;
+    bottom: 30px;
+    right: 30px; 
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 15px 40px;
+    z-index: 100;
+
+    background-color: var(--ts-stone-dark);
+    background-image: 
+        url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="rock"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23rock)" opacity="0.1"/></svg>'),
+        radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 120%);
+    
+    border: 3px solid var(--ts-outline);
+    border-radius: 12px;
+    box-shadow: 0px 6px 0px var(--ts-outline), 0px 10px 20px rgba(0, 0, 0, 0.4);
+
+    opacity: 0;
+    transform: translateX(120%);
+    animation: stoneSlam 1s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    animation-delay: 0.8s;
+}
+
+@keyframes stoneSlam { to { opacity: 1; transform: translateX(0); } }
+
+.quest-stats-bar::before, .quest-stats-bar::after {
+    content: ''; position: absolute; width: 8px; height: 8px;
+    background-color: var(--ts-steel); border: 2px solid var(--ts-outline);
+    border-radius: 50%; box-shadow: inset -1px -1px 0px rgba(0,0,0,0.3);
+}
+.quest-stats-bar::before { top: 6px; left: 6px; }
+.quest-stats-bar::after { bottom: 6px; right: 6px; }
+
+.stat-item { display: flex; align-items: center; gap: 12px; transition: transform 0.2s ease; }
+.quest-stats-bar:hover .stat-item { transform: translateY(-2px); }
+
+.stat-icon { font-size: 1.5rem; filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.3)); }
+.stat-value {
+    font-family: 'Chelsea Market', cursive; font-size: 1.1rem;
+    color: var(--ts-white); line-height: 1; text-shadow: 1.5px 1.5px 0px var(--ts-outline);
+}
+.stat-label {
+    font-family: 'VT323', monospace; font-size: 0.85rem;
+    color: var(--ts-white); opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;
+}
+.stat-divider {
+    width: 2px; height: 30px; background-color: var(--ts-outline);
+    opacity: 0.4; box-shadow: 1px 0px 0px rgba(255,255,255,0.1);
+}
+
+/* --- 6. Responsive Behavior --- */
+@media (max-width: 600px) {
+    .quest-container-2col { flex-direction: column-reverse; min-height: auto; margin-top: 20px; }
+    .stone-left { border-right: 6px solid var(--ts-outline); border-top: none; border-radius: 0 0 16px 16px; }
+    .parchment-right { border-bottom: none; border-radius: 16px 16px 0 0; padding: 40px; }
+    
+    .quest-stats-bar {
+        position: relative; right: auto; bottom: 0; margin: 40px auto;
+        width: 90%; flex-wrap: wrap; justify-content: space-around;
+        animation: fadeInUp 1s ease forwards; transform: translateY(20px);
+    }
+    .stat-divider { display: none; }
+}
+@media (max-width: 900px) {
+    .quest-container-2col {
+        flex-direction: column;
+        width: 92%;
+        max-width: 92%;
+        min-height: auto;
+        margin: 80px auto 16px auto; /* ← 80px clears the fixed navbar */
+    }
+
+    .parchment-right {
+        order: -1;
+        border-bottom: none;
+        border-radius: 16px 16px 0 0;
+        padding: 24px 20px;
+        min-height: 180px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .floating-logo {
+        max-width: 120px;
+    }
+
+    .stone-left {
+        order: 1;
+        border-right: 6px solid var(--ts-outline);
+        border-top: none;
+        border-radius: 0 0 16px 16px;
+        padding: 28px 20px;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    /* Fix the overflowing typewriter text */
+    .welcome-subtitle {
+        white-space: normal !important;  /* ← kill nowrap */
+        overflow: visible !important;
+        border-right: none !important;
+        animation: none !important;      /* ← disable typewriter on mobile */
+        width: 100% !important;
+        font-size: 0.95rem;
+        margin: 12px 0;
+    }
+
+    .hero-cta-group {
+        margin-top: 16px;
+    }
+
+    .btn-primary-quest {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .quest-stats-bar {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        width: 92%;
+        margin: 0 auto 30px auto;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 16px;
+        padding: 16px;
+        transform: none;
+        animation: none;
+        opacity: 1;
+    }
+
+    .stat-divider { display: none; }
+
+    .stat-item {
+        flex: 0 0 40%;
+        justify-content: center;
+    }
+}
+@media (max-width: 900px) {
+    .quest-stats-bar {
+        display: none;
+    }
+}
+

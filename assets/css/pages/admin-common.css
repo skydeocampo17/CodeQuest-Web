@@ -1,0 +1,363 @@
+.admin-page {
+    overflow-x: hidden;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.admin-page-wide .admin-grid {
+    gap: 40px;
+}
+
+.admin-main,
+.admin-sidebar {
+    min-width: 0;
+}
+
+.admin-page-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+    font-family: 'Chelsea Market', cursive;
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.admin-page-title-icon {
+    font-size: 2.5rem;
+}
+
+.admin-header {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(20, 26, 31, 0.8);
+    border: 4px solid var(--ts-outline);
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed;
+    font-family: 'VT323', monospace;
+}
+
+.admin-table th {
+    background: var(--ts-stone-dark);
+    color: white;
+    font-family: 'Chelsea Market', cursive;
+    font-size: 1.2rem;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 2px dashed var(--ts-outline);
+    user-select: none;
+}
+
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #d2dae2;
+    font-size: 1.4rem;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.admin-table tbody tr {
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: #2f3640;
+    transform: scale(1.01);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 10;
+}
+
+.admin-table-sort {
+    cursor: pointer;
+    color: #48dbfb;
+}
+
+.admin-table-sort:hover {
+    color: #badc58;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-action-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.admin-action-button {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.admin-action-button:hover {
+    transform: scale(1.2);
+}
+
+.admin-filter-card {
+    background: var(--ts-stone-dark);
+    border: 4px solid var(--ts-outline);
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+    position: sticky;
+    top: 90px;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+}
+
+.admin-filter-card h2 {
+    font-family: 'Chelsea Market', cursive;
+    color: white;
+    margin: 0 0 10px;
+    border-bottom: 2px dashed #57606f;
+    padding-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+.admin-filter-input,
+.admin-filter-select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: #1e272e;
+    border: 2px solid #57606f;
+    color: white;
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.admin-filter-input:focus,
+.admin-filter-select:focus {
+    outline: none;
+    border-color: #48dbfb;
+}
+
+.admin-filter-label {
+    font-family: 'VT323', monospace;
+    color: #a4b0be;
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.admin-count {
+    font-family: 'Chelsea Market', cursive;
+    font-size: 4rem;
+    color: #eb4d4b;
+    text-shadow: 3px 3px 0 #8b0000;
+    margin-top: 20px;
+    line-height: 1;
+}
+
+.admin-count-copy {
+    font-family: 'VT323', monospace;
+    color: #a4b0be;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.admin-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 20, 25, 0.9);
+    z-index: 3000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.admin-modal-card {
+    background: #dcdde1;
+    border: 6px solid #2f3542;
+    border-radius: 12px;
+    padding: 30px;
+    width: 95%;
+    max-width: 800px;
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.6);
+}
+
+.admin-modal-card-sm {
+    max-width: 500px;
+}
+
+.admin-modal-card-xs {
+    max-width: 400px;
+}
+
+.admin-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px dashed #7f8c8d;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.admin-modal-title {
+    margin: 0;
+    font-family: 'Chelsea Market', cursive;
+    font-size: 1.8rem;
+    color: #2f3542;
+}
+
+.admin-close-button {
+    width: 35px;
+    height: 35px;
+    border-radius: 4px;
+    border: 2px solid #d63031;
+    background: #ff7675;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-modal-content-box {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px dashed #2f3542;
+}
+
+.admin-modal-card .admin-filter-input,
+.admin-modal-card .admin-filter-select {
+    background: white;
+    color: #2f3542;
+    border-color: #7f8c8d;
+}
+
+.admin-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.admin-form-section {
+    margin-bottom: 20px;
+}
+
+.admin-modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.admin-modal-actions-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--ts-outline);
+}
+
+.admin-primary-button {
+    background: #badc58;
+    border: 3px solid #6ab04c;
+    color: #2f3542;
+    padding: 10px 25px;
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.admin-danger-button {
+    background: #ff7675;
+    border: 3px solid #d63031;
+    color: white;
+}
+
+.admin-neutral-button {
+    background: var(--ts-red);
+    color: white;
+}
+
+.mobile-admin-warning {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 20px 12px;
+    }
+
+    .admin-filter-card {
+        position: static;
+    }
+
+    .admin-modal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-grid,
+    .admin-main,
+    .admin-sidebar,
+    .admin-filter-card,
+    .admin-table {
+        display: none !important;
+    }
+
+    .mobile-admin-warning {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        z-index: 9999;
+    }
+
+    .mobile-admin-box {
+        background: #dcdde1;
+        border: 4px solid #2f3542;
+        padding: 25px;
+        border-radius: 10px;
+        max-width: 320px;
+        font-family: 'VT323', monospace;
+    }
+
+    .mobile-admin-btn {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 15px;
+        background: #6ab04c;
+        color: white;
+        text-decoration: none;
+        border: 2px solid #2f3542;
+    }
+}
+

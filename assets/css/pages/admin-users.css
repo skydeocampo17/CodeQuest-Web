@@ -1,0 +1,63 @@
+.admin-users-page .role-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+}
+
+.admin-users-page .role-badge.admin {
+    background: #ff7675;
+    color: white;
+    border: 1px solid #d63031;
+}
+
+.admin-users-page .role-badge.user {
+    background: #48dbfb;
+    color: #2f3542;
+    border: 1px solid #0abde3;
+}
+
+.admin-users-page .hero-name-cell {
+    font-size: 1.6rem;
+    color: #ecf0f1;
+    font-family: 'VT323', monospace;
+}
+
+.admin-users-page .briefing-copy {
+    font-family: 'VT323', monospace;
+    font-size: 1.6rem;
+    color: #2f3542;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.admin-users-page .briefing-meta {
+    color: #7f8c8d;
+}
+
+.admin-users-page .briefing-strong {
+    color: #1e272e;
+    font-weight: bold;
+}
+
+.admin-users-page .success-modal {
+    text-align: center;
+    border-color: #badc58;
+}
+
+.admin-users-page .success-modal-title {
+    color: #6ab04c;
+    font-family: 'Chelsea Market', cursive;
+    margin-top: 0;
+}
+
+.admin-users-page .success-modal-copy {
+    font-family: 'VT323', monospace;
+    font-size: 1.6rem;
+    margin: 20px 0;
+    color: #2f3542;
+}
+

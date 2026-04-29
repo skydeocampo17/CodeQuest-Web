@@ -1,0 +1,10 @@
+RewriteEngine On
+# Set base to root because your files are in public_html
+RewriteBase /
+
+# Allow real files and directories to load (so CSS and Images work)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Send everything else to your router
+RewriteRule ^(.*)$ routes/routes-router.php?url=$1 [QSA,L]
