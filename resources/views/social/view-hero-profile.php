@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
             exit();
         }
     } catch (Throwable $e) {
-        die("Hero Profile Error: " . $e->getMessage());
+        die("🔥 EXACT ERROR: " . $e->getMessage());
     }
 }
 
