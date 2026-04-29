@@ -63,12 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
                 } else { throw new Exception("Current password incorrect!"); }
             }
 
-                        $_SESSION['show_success_modal'] = true;
+            $_SESSION['show_success_modal'] = true;
             header("Location: /hero");
             exit();
         }
-    } catch (Throwable $e) {
-        die("🔥 EXACT ERROR: " . $e->getMessage());
+    } catch (PDOException $e) {
+        die("Hero Profile DB Error: " . $e->getMessage());
     }
 }
 
@@ -115,11 +115,8 @@ try {
     
     $earned_ids = $earned_stmt->fetchAll(PDO::FETCH_COLUMN);
 
-} catch (PDOException $e) {
-    error_log("Hero Profile DB Error: " . $e->getMessage());
-    $_SESSION['error'] = "The forge could not load that hero profile.";
-    header("Location: /heroes");
-    exit();
+} catch (Throwable $e) {
+    die("🔥 EXACT ERROR: " . $e->getMessage());
 }
 app_render_document_start('Hero Dashboard | CodeQuest', [
     '/assets/css/layout-dashboard.css',
