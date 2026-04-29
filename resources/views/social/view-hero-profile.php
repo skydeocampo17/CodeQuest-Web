@@ -118,6 +118,7 @@ try {
 } catch (Throwable $e) {
     die("🔥 EXACT ERROR: " . $e->getMessage());
 }
+
 app_render_document_start('Hero Dashboard | CodeQuest', [
     '/assets/css/layout-dashboard.css',
     '/assets/css/pages/admin-common.css',

@@ -135,35 +135,35 @@ if (!function_exists('cq_resolve_table_name')) {
 if (!function_exists('cq_user_types_table')) {
     function cq_user_types_table(PDO $pdo): ?string
     {
-        return cq_resolve_table_name($pdo, ['user_types', 'user_type']);
+        return cq_resolve_table_name($pdo, ['user_types']);
     }
 }
 
 if (!function_exists('cq_languages_table')) {
     function cq_languages_table(PDO $pdo): ?string
     {
-        return cq_resolve_table_name($pdo, ['programming_languages', 'programming_language']);
+        return cq_resolve_table_name($pdo, ['programming_languages']);
     }
 }
 
 if (!function_exists('cq_quiz_types_table')) {
     function cq_quiz_types_table(PDO $pdo): ?string
     {
-        return cq_resolve_table_name($pdo, ['quiz_types', 'quiz_type']);
+        return cq_resolve_table_name($pdo, ['quiz_types']);
     }
 }
 
 if (!function_exists('cq_difficulty_levels_table')) {
     function cq_difficulty_levels_table(PDO $pdo): ?string
     {
-        return cq_resolve_table_name($pdo, ['difficulty_levels', 'difficulty_level']);
+        return cq_resolve_table_name($pdo, ['difficulty_levels']);
     }
 }
 
 if (!function_exists('cq_user_masteries_table')) {
     function cq_user_masteries_table(PDO $pdo): ?string
     {
-        return cq_resolve_table_name($pdo, ['user_masteries', 'user_mastery']);
+        return cq_resolve_table_name($pdo, ['user_masteries']);
     }
 }
 
@@ -374,83 +374,34 @@ if (!function_exists('cq_get_user_mastery_rows')) {
         $masteriesTable = cq_user_masteries_table($pdo);
         $languagesTable = cq_languages_table($pdo);
 
-        if ($masteriesTable !== null) {
-            $safeMasteriesTable = cq_safe_identifier($masteriesTable);
-            $safeLanguagesTable = $languagesTable !== null ? cq_safe_identifier($languagesTable) : null;
-
-            if (cq_column_exists($pdo, $masteriesTable, 'language') && cq_column_exists($pdo, $masteriesTable, 'language_xp')) {
-                $stmt = $pdo->prepare("
-                    SELECT
-                        language AS lang,
-                        language_xp AS current_xp,
-                        FLOOR(language_xp / 1000) + 1 AS level
-                    FROM `{$safeMasteriesTable}`
-                    WHERE user_id = ?
-                ");
-                $stmt->execute([$userId]);
-                return $stmt->fetchAll(PDO::FETCH_ASSOC);
-            }
-
-            $xpColumn = cq_user_mastery_xp_column($pdo, $masteriesTable);
-            if ($safeLanguagesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language_id') && $xpColumn !== null) {
-                $safeXpColumn = cq_safe_identifier($xpColumn);
-                $levelExpression = cq_column_exists($pdo, $masteriesTable, 'mastery_level')
-                    ? "COALESCE(um.mastery_level, FLOOR(um.{$safeXpColumn} / 1000) + 1)"
-                    : "FLOOR(um.{$safeXpColumn} / 1000) + 1";
-                $stmt = $pdo->prepare("
-                    SELECT
-                        pl.name AS lang,
-                        um.{$safeXpColumn} AS current_xp,
-                        {$levelExpression} AS level
-                    FROM `{$safeMasteriesTable}` um
-                    JOIN `{$safeLanguagesTable}` pl ON um.language_id = pl.id
-                    WHERE um.user_id = ?
-                ");
-                $stmt->execute([$userId]);
-                return $stmt->fetchAll(PDO::FETCH_ASSOC);
-            }
+        if ($masteriesTable === null || $languagesTable === null) {
+            return [];
         }
 
-        if (cq_table_exists($pdo, 'user_stats')) {
-            $languagesTable = cq_languages_table($pdo);
-            if ($languagesTable === null) {
-                return [];
-            }
-            $safeLanguagesTable = cq_safe_identifier($languagesTable);
-            $stmt = $pdo->prepare("
-                SELECT
-                    pl.name AS lang,
-                    us.current_xp AS current_xp,
-                    FLOOR(us.current_xp / 1000) + 1 AS level
-                FROM user_stats us
-                JOIN `{$safeLanguagesTable}` pl ON us.language_id = pl.id
-                WHERE us.user_id = ?
-            ");
-            $stmt->execute([$userId]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $safeMasteriesTable = cq_safe_identifier($masteriesTable);
+        $safeLanguagesTable = cq_safe_identifier($languagesTable);
+        $xpColumn = cq_user_mastery_xp_column($pdo, $masteriesTable);
+
+        if (!cq_column_exists($pdo, $masteriesTable, 'language_id') || $xpColumn === null) {
+            return [];
         }
 
-        if (cq_table_exists($pdo, 'leaderboards')) {
-            $languagesTable = cq_languages_table($pdo);
-            if ($languagesTable === null) {
-                return [];
-            }
-            $safeLanguagesTable = cq_safe_identifier($languagesTable);
-            $stmt = $pdo->prepare("
-                SELECT
-                    pl.name AS lang,
-                    MAX(l.score) AS current_xp,
-                    FLOOR(MAX(l.score) / 1000) + 1 AS level
-                FROM leaderboards l
-                JOIN `{$safeLanguagesTable}` pl ON l.language_id = pl.id
-                WHERE l.user_id = ?
-                GROUP BY pl.name
-            ");
-            $stmt->execute([$userId]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-
-        return [];
+        $safeXpColumn = cq_safe_identifier($xpColumn);
+        $levelExpression = cq_column_exists($pdo, $masteriesTable, 'mastery_level')
+            ? "GREATEST(COALESCE(um.mastery_level, 0), FLOOR(um.{$safeXpColumn} / 1000) + 1)"
+            : "FLOOR(um.{$safeXpColumn} / 1000) + 1";
+        $stmt = $pdo->prepare("
+            SELECT
+                pl.name AS lang,
+                um.{$safeXpColumn} AS current_xp,
+                {$levelExpression} AS level
+            FROM `{$safeMasteriesTable}` um
+            JOIN `{$safeLanguagesTable}` pl ON um.language_id = pl.id
+            WHERE um.user_id = ?
+            ORDER BY pl.id ASC
+        ");
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 
@@ -463,26 +414,6 @@ if (!function_exists('cq_get_language_leaderboard_rows')) {
         $masteriesTable = cq_user_masteries_table($pdo);
         $languagesTable = cq_languages_table($pdo);
         $publicUserFilter = cq_get_public_user_filter($pdo, 'u');
-
-        if ($masteriesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language') && cq_column_exists($pdo, $masteriesTable, 'language_xp')) {
-            $safeMasteriesTable = cq_safe_identifier($masteriesTable);
-            $stmt = $pdo->prepare("
-                SELECT u.username, {$titleExpression} AS rank_title, um.language_xp AS score
-                FROM users u
-                JOIN `{$safeMasteriesTable}` um ON u.id = um.user_id
-                WHERE um.language = :lang
-                  AND {$publicUserFilter['sql']}
-                ORDER BY um.language_xp DESC
-                LIMIT :limit
-            ");
-            $stmt->bindValue(':lang', $lang);
-            foreach ($publicUserFilter['params'] as $key => $value) {
-                $stmt->bindValue($key, $value, PDO::PARAM_INT);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
 
         if ($masteriesTable !== null && $languagesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language_id')) {
             $safeMasteriesTable = cq_safe_identifier($masteriesTable);
@@ -511,49 +442,7 @@ if (!function_exists('cq_get_language_leaderboard_rows')) {
             }
         }
 
-        if (cq_table_exists($pdo, 'user_stats') && $languagesTable !== null) {
-            $safeLanguagesTable = cq_safe_identifier($languagesTable);
-            $stmt = $pdo->prepare("
-                SELECT u.username, {$titleExpression} AS rank_title, us.current_xp AS score
-                FROM users u
-                JOIN user_stats us ON u.id = us.user_id
-                JOIN `{$safeLanguagesTable}` pl ON us.language_id = pl.id
-                WHERE pl.name = :lang
-                  AND {$publicUserFilter['sql']}
-                ORDER BY us.current_xp DESC
-                LIMIT :limit
-            ");
-            $stmt->bindValue(':lang', $lang);
-            foreach ($publicUserFilter['params'] as $key => $value) {
-                $stmt->bindValue($key, $value, PDO::PARAM_INT);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-
-        if ($languagesTable === null) {
-            return [];
-        }
-
-        $safeLanguagesTable = cq_safe_identifier($languagesTable);
-        $stmt = $pdo->prepare("
-            SELECT u.username, {$titleExpression} AS rank_title, l.score AS score
-            FROM leaderboards l
-            JOIN users u ON l.user_id = u.id
-            JOIN `{$safeLanguagesTable}` pl ON l.language_id = pl.id
-            WHERE pl.name = :lang
-              AND {$publicUserFilter['sql']}
-            ORDER BY l.score DESC
-            LIMIT :limit
-        ");
-        $stmt->bindValue(':lang', $lang);
-        foreach ($publicUserFilter['params'] as $key => $value) {
-            $stmt->bindValue($key, $value, PDO::PARAM_INT);
-        }
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return [];
     }
 }
 
@@ -563,39 +452,6 @@ if (!function_exists('cq_get_social_feed_rows')) {
         $masteriesTable = cq_user_masteries_table($pdo);
         $languagesTable = cq_languages_table($pdo);
         $publicUserFilter = cq_get_public_user_filter($pdo, 'u');
-
-        if ($masteriesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language') && cq_column_exists($pdo, $masteriesTable, 'language_xp')) {
-            $safeMasteriesTable = cq_safe_identifier($masteriesTable);
-            $query = "
-                SELECT
-                    u.username,
-                    um.language AS language,
-                    um.language_xp AS score,
-                    " . (cq_column_exists($pdo, $masteriesTable, 'updated_at') ? "um.updated_at" : "NOW()") . " AS last_updated
-                FROM `{$safeMasteriesTable}` um
-                JOIN users u ON um.user_id = u.id
-            ";
-
-            $conditions = [$publicUserFilter['sql']];
-
-            if ($lang !== 'ALL') {
-                $conditions[] = "um.language = :lang";
-            }
-
-            $query .= " WHERE " . implode(' AND ', $conditions);
-            $query .= " ORDER BY last_updated DESC LIMIT :limit OFFSET :offset";
-            $stmt = $pdo->prepare($query);
-            if ($lang !== 'ALL') {
-                $stmt->bindValue(':lang', $lang);
-            }
-            foreach ($publicUserFilter['params'] as $key => $value) {
-                $stmt->bindValue($key, $value, PDO::PARAM_INT);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
 
         if ($masteriesTable !== null && $languagesTable !== null && cq_column_exists($pdo, $masteriesTable, 'language_id')) {
             $safeMasteriesTable = cq_safe_identifier($masteriesTable);
@@ -638,75 +494,7 @@ if (!function_exists('cq_get_social_feed_rows')) {
             }
         }
 
-        if (cq_table_exists($pdo, 'user_stats') && $languagesTable !== null) {
-            $safeLanguagesTable = cq_safe_identifier($languagesTable);
-            $query = "
-                SELECT
-                    u.username,
-                    pl.name AS language,
-                    us.current_xp AS score,
-                    us.last_activity AS last_updated
-                FROM user_stats us
-                JOIN users u ON us.user_id = u.id
-                JOIN `{$safeLanguagesTable}` pl ON us.language_id = pl.id
-            ";
-
-            $conditions = [$publicUserFilter['sql']];
-
-            if ($lang !== 'ALL') {
-                $conditions[] = "pl.name = :lang";
-            }
-
-            $query .= " WHERE " . implode(' AND ', $conditions);
-            $query .= " ORDER BY us.last_activity DESC LIMIT :limit OFFSET :offset";
-            $stmt = $pdo->prepare($query);
-            if ($lang !== 'ALL') {
-                $stmt->bindValue(':lang', $lang);
-            }
-            foreach ($publicUserFilter['params'] as $key => $value) {
-                $stmt->bindValue($key, $value, PDO::PARAM_INT);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-
-        if ($languagesTable === null) {
-            return [];
-        }
-
-        $safeLanguagesTable = cq_safe_identifier($languagesTable);
-        $query = "
-            SELECT
-                u.username,
-                pl.name AS language,
-                l.score AS score,
-                l.last_updated AS last_updated
-            FROM leaderboards l
-            JOIN users u ON l.user_id = u.id
-            JOIN `{$safeLanguagesTable}` pl ON l.language_id = pl.id
-        ";
-
-        $conditions = [$publicUserFilter['sql']];
-
-        if ($lang !== 'ALL') {
-            $conditions[] = "pl.name = :lang";
-        }
-
-        $query .= " WHERE " . implode(' AND ', $conditions);
-        $query .= " ORDER BY l.last_updated DESC LIMIT :limit OFFSET :offset";
-        $stmt = $pdo->prepare($query);
-        if ($lang !== 'ALL') {
-            $stmt->bindValue(':lang', $lang);
-        }
-        foreach ($publicUserFilter['params'] as $key => $value) {
-            $stmt->bindValue($key, $value, PDO::PARAM_INT);
-        }
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return [];
     }
 }
 
@@ -719,14 +507,12 @@ if (!function_exists('cq_get_user_total_xp')) {
             return (int) ($stmt->fetchColumn() ?: 0);
         }
 
-        if (cq_table_exists($pdo, 'user_stats')) {
-            $stmt = $pdo->prepare("SELECT COALESCE(SUM(current_xp), 0) FROM user_stats WHERE user_id = ?");
-            $stmt->execute([$userId]);
-            return (int) ($stmt->fetchColumn() ?: 0);
-        }
-
-        if (cq_table_exists($pdo, 'leaderboards')) {
-            $stmt = $pdo->prepare("SELECT COALESCE(SUM(score), 0) FROM leaderboards WHERE user_id = ?");
+        $masteriesTable = cq_user_masteries_table($pdo);
+        $xpColumn = $masteriesTable !== null ? cq_user_mastery_xp_column($pdo, $masteriesTable) : null;
+        if ($masteriesTable !== null && $xpColumn !== null) {
+            $safeMasteriesTable = cq_safe_identifier($masteriesTable);
+            $safeXpColumn = cq_safe_identifier($xpColumn);
+            $stmt = $pdo->prepare("SELECT COALESCE(SUM(`{$safeXpColumn}`), 0) FROM `{$safeMasteriesTable}` WHERE user_id = ?");
             $stmt->execute([$userId]);
             return (int) ($stmt->fetchColumn() ?: 0);
         }
@@ -772,28 +558,24 @@ if (!function_exists('cq_get_global_leaderboard_rows')) {
                 WHERE {$publicUserFilter['sql']}
                 ORDER BY score DESC, u.id ASC" . $limitSql;
             $stmt = $pdo->prepare($query);
-        } elseif (cq_table_exists($pdo, 'user_stats')) {
-            $query = "
-                SELECT
-                    u.id,
-                    u.username,
-                    {$titleExpression} AS rank_title,
-                    COALESCE(SUM(us.current_xp), 0) AS score
-                FROM users u
-                LEFT JOIN user_stats us ON u.id = us.user_id
-                WHERE {$publicUserFilter['sql']}
-                GROUP BY u.id, u.username
-                ORDER BY score DESC, u.id ASC" . $limitSql;
-            $stmt = $pdo->prepare($query);
         } else {
+            $masteriesTable = cq_user_masteries_table($pdo);
+            $xpColumn = $masteriesTable !== null ? cq_user_mastery_xp_column($pdo, $masteriesTable) : null;
+
+            if ($masteriesTable === null || $xpColumn === null) {
+                return [];
+            }
+
+            $safeMasteriesTable = cq_safe_identifier($masteriesTable);
+            $safeXpColumn = cq_safe_identifier($xpColumn);
             $query = "
                 SELECT
                     u.id,
                     u.username,
                     {$titleExpression} AS rank_title,
-                    COALESCE(SUM(l.score), 0) AS score
+                    COALESCE(SUM(um.{$safeXpColumn}), 0) AS score
                 FROM users u
-                LEFT JOIN leaderboards l ON u.id = l.user_id
+                LEFT JOIN `{$safeMasteriesTable}` um ON u.id = um.user_id
                 WHERE {$publicUserFilter['sql']}
                 GROUP BY u.id, u.username
                 ORDER BY score DESC, u.id ASC" . $limitSql;
