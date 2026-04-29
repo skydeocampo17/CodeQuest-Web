@@ -86,11 +86,8 @@ switch ($baseRoute) {
     case 'hero':
         if (isset($segments[1]) && $segments[1] !== '') {
             $_GET['target_hero'] = urldecode($segments[1]);
-            break;
         }
-
-        header('Location: /heroes');
-        exit();
+        break;
 
     default:
         break;
