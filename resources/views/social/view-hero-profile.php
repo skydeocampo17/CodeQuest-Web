@@ -1,9 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../includes/app.php';
 
-var_dump($_SESSION);
-exit();
-
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
 $config_path = __DIR__ . '/../../../data/database.php';
