@@ -48,6 +48,10 @@ body {
     overflow: hidden; 
 }
 
+[hidden] {
+    display: none !important;
+}
+
 /* Universal Rivets */
 .rivet {
     position: absolute;
@@ -270,6 +274,14 @@ body {
     align-items: center;
     padding: 24px;
     box-sizing: border-box;
+}
+
+.app-modal-overlay[aria-hidden="false"] {
+    display: flex;
+}
+
+.app-modal-overlay[aria-hidden="true"] {
+    display: none !important;
 }
 
 .app-modal {

@@ -5,6 +5,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const openLogoutButton = document.querySelector("[data-logout-open]");
     const closeLogoutButton = document.querySelector("[data-logout-close]");
 
+    const openModal = (modal) => {
+        if (!modal) {
+            return;
+        }
+
+        modal.hidden = false;
+        modal.style.display = "flex";
+        modal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeModal = (modal) => {
+        if (!modal) {
+            return;
+        }
+
+        modal.hidden = true;
+        modal.style.display = "none";
+        modal.setAttribute("aria-hidden", "true");
+    };
+
     if (burger && menu) {
         burger.addEventListener("click", () => {
             const isOpen = menu.classList.toggle("active");
@@ -24,25 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (openLogoutButton && logoutModal) {
         openLogoutButton.addEventListener("click", (event) => {
             event.preventDefault();
-            logoutModal.style.display = "flex";
-            logoutModal.setAttribute("aria-hidden", "false");
+            openModal(logoutModal);
         });
     }
 
     if (closeLogoutButton && logoutModal) {
         closeLogoutButton.addEventListener("click", () => {
-            logoutModal.style.display = "none";
-            logoutModal.setAttribute("aria-hidden", "true");
+            closeModal(logoutModal);
         });
     }
 
     if (logoutModal) {
         logoutModal.addEventListener("click", (event) => {
             if (event.target === logoutModal) {
-                logoutModal.style.display = "none";
-                logoutModal.setAttribute("aria-hidden", "true");
+                closeModal(logoutModal);
             }
         });
     }
 });
-

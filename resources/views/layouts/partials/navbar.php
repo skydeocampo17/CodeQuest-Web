@@ -57,7 +57,7 @@
 </nav>
 
 <?php if (isset($_SESSION['user_id'])): ?>
-<div id="logoutConfirmModal" class="app-modal-overlay" aria-hidden="true">
+<div id="logoutConfirmModal" class="app-modal-overlay" hidden aria-hidden="true" style="display: none;">
     <div class="app-modal app-modal-sm">
         <h2 class="app-modal-title app-modal-title-danger">Leave the Kingdom?</h2>
         <p class="app-modal-copy">

@@ -4,28 +4,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const state = document.getElementById("profilePageState");
     const shouldShowSuccess = state?.dataset.showProfileSuccess === "1";
 
+    const openModal = (modal) => {
+        if (!modal) {
+            return;
+        }
+
+        modal.hidden = false;
+        modal.style.display = "flex";
+        modal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeModal = (modal) => {
+        if (!modal) {
+            return;
+        }
+
+        modal.hidden = true;
+        modal.style.display = "none";
+        modal.setAttribute("aria-hidden", "true");
+    };
+
     document.querySelectorAll("[data-settings-open]").forEach((button) => {
         button.addEventListener("click", (event) => {
             event.preventDefault();
-            if (settingsModal) {
-                settingsModal.style.display = "flex";
-            }
+            openModal(settingsModal);
         });
     });
 
     document.querySelectorAll("[data-settings-close]").forEach((button) => {
         button.addEventListener("click", () => {
-            if (settingsModal) {
-                settingsModal.style.display = "none";
-            }
+            closeModal(settingsModal);
         });
     });
 
     document.querySelectorAll("[data-profile-success-close]").forEach((button) => {
         button.addEventListener("click", () => {
-            if (successModal) {
-                successModal.style.display = "none";
-            }
+            closeModal(successModal);
         });
     });
 
@@ -36,12 +50,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modal.addEventListener("click", (event) => {
             if (event.target === modal) {
-                modal.style.display = "none";
+                closeModal(modal);
             }
         });
     });
 
     if (shouldShowSuccess && successModal) {
-        successModal.style.display = "flex";
+        openModal(successModal);
     }
 });

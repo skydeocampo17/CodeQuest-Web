@@ -212,7 +212,7 @@ app_include('layout/background-effects.php');
         </aside>
     </div>
 
-    <div id="settingsModal" class="app-modal-overlay">
+    <div id="settingsModal" class="app-modal-overlay" hidden aria-hidden="true" style="display: none;">
         <form action="" method="POST" class="app-modal profile-settings-form">
             <input type="hidden" name="action_type" value="update_full_profile">
             
@@ -247,7 +247,7 @@ app_include('layout/background-effects.php');
         </form>
     </div>
 
-    <div id="updateSuccessModal" class="app-modal-overlay">
+    <div id="updateSuccessModal" class="app-modal-overlay" hidden aria-hidden="true" style="display: none;">
         <div class="app-modal app-modal-sm profile-success-modal">
             <h2 class="profile-success-title">✨ IDENTITY REFORGED</h2>
             <p class="profile-success-copy">Thy changes have been recorded!</p>

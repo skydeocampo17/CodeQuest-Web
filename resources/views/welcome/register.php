@@ -62,7 +62,7 @@ app_include('layout/background-effects.php');
 </div>
 
 <?php if (isset($_SESSION['error'])): ?>
-<div id="errorModal" class="app-modal-overlay" style="display: flex;">
+<div id="errorModal" class="app-modal-overlay" style="display: flex;" aria-hidden="false">
     <div class="app-modal modal-error">
         <div class="rivet r-tl"></div><div class="rivet r-tr"></div>
         <div class="rivet r-bl"></div><div class="rivet r-br"></div>
@@ -79,7 +79,7 @@ app_include('layout/background-effects.php');
 </div>
 <?php endif; ?>
 
-<div id="rulesModal" class="app-modal-overlay" hidden aria-hidden="true">
+<div id="rulesModal" class="app-modal-overlay" hidden aria-hidden="true" style="display: none;">
     <div class="app-modal">
         <div class="rivet r-tl"></div><div class="rivet r-tr"></div>
         <div class="rivet r-bl"></div><div class="rivet r-br"></div>
