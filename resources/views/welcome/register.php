@@ -79,7 +79,7 @@ app_include('layout/background-effects.php');
 </div>
 <?php endif; ?>
 
-<div id="rulesModal" class="app-modal-overlay">
+<div id="rulesModal" class="app-modal-overlay" hidden aria-hidden="true">
     <div class="app-modal">
         <div class="rivet r-tl"></div><div class="rivet r-tr"></div>
         <div class="rivet r-bl"></div><div class="rivet r-br"></div>

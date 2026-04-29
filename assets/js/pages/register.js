@@ -5,33 +5,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorModal = document.getElementById("errorModal");
     const closeErrorButton = document.getElementById("closeErrorBtn");
 
+    const openModal = (modal) => {
+        if (!modal) {
+            return;
+        }
+
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        modal.style.display = "flex";
+    };
+
+    const closeModal = (modal) => {
+        if (!modal) {
+            return;
+        }
+
+        modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
+        modal.style.display = "none";
+    };
+
     if (rulesLink && rulesModal) {
         rulesLink.addEventListener("click", (event) => {
             event.preventDefault();
-            rulesModal.style.display = "flex";
+            openModal(rulesModal);
         });
     }
 
     if (closeRulesButton && rulesModal) {
         closeRulesButton.addEventListener("click", () => {
-            rulesModal.style.display = "none";
+            closeModal(rulesModal);
         });
     }
 
     if (closeErrorButton && errorModal) {
         closeErrorButton.addEventListener("click", () => {
-            errorModal.style.display = "none";
+            closeModal(errorModal);
         });
     }
 
     window.addEventListener("click", (event) => {
         if (event.target === rulesModal) {
-            rulesModal.style.display = "none";
+            closeModal(rulesModal);
         }
 
         if (event.target === errorModal) {
-            errorModal.style.display = "none";
+            closeModal(errorModal);
         }
     });
 });
-

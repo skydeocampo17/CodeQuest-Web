@@ -15,42 +15,42 @@
     <div class="nav-collapse-wrapper" id="navMenu">
         <div class="nav-main-actions">
             <?php if (isset($_SESSION['user_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                <a href="/admin-dashboard" class="nav-link-simple">THE THRONE</a>
+                <a href="/admin-dashboard" class="nav-link-simple">👑 THE THRONE</a>
                 <span class="nav-divider"></span>
-                <a href="/admin-quests" class="nav-link-simple">FORGE QUESTS</a>
+                <a href="/admin-quests" class="nav-link-simple">⚒️ FORGE QUESTS</a>
                 <span class="nav-divider"></span>
-                <a href="/admin-quiz-types" class="nav-link-simple">TRIAL TYPES</a>
+                <a href="/admin-quiz-types" class="nav-link-simple">📚 TRIAL TYPES</a>
                 <span class="nav-divider"></span>
-                <a href="/admin-users" class="nav-link-simple">MANAGE REALM</a>
+                <a href="/admin-users" class="nav-link-simple">🛡️ MANAGE REALM</a>
             <?php elseif (isset($_SESSION['user_id'])): ?>
-                <a href="/dashboard" class="nav-link-simple">MY KINGDOM</a>
+                <a href="/dashboard" class="nav-link-simple">🏰 MY KINGDOM</a>
                 <span class="nav-divider"></span>
-                <a href="/play" class="nav-link-simple">PLAY</a>
+                <a href="/play" class="nav-link-simple">⚔️ PLAY</a>
                 <span class="nav-divider"></span>
-                <a href="/heroes" class="nav-link-simple">HEROES</a>
+                <a href="/heroes" class="nav-link-simple">🦸 HEROES</a>
             <?php else: ?>
-                <a href="/guest-dashboard" class="nav-link-simple">THE KINGDOM</a>
+                <a href="/guest-dashboard" class="nav-link-simple">🏰 THE KINGDOM</a>
                 <span class="nav-divider"></span>
-                <a href="/play" class="nav-link-simple">PLAY</a>
+                <a href="/play" class="nav-link-simple">⚔️ PLAY</a>
                 <span class="nav-divider"></span>
-                <a href="/heroes" class="nav-link-simple">HEROES</a>
+                <a href="/heroes" class="nav-link-simple">🦸 HEROES</a>
             <?php endif; ?>
 
             <span class="nav-divider"></span>
-            <a href="/about" class="nav-link-simple">LORE</a>
+            <a href="/about" class="nav-link-simple">📖 LORE</a>
         </div>
 
         <div class="nav-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="hero-profile-snippet">
                     <a href="/hero/<?php echo urlencode($_SESSION['username']); ?>" class="nav-link-simple">
-                        <?php echo ($_SESSION['role'] === 'admin') ? 'OVERSEER' : 'MY PROFILE'; ?>
+                        <?php echo ($_SESSION['role'] === 'admin') ? '🧙 OVERSEER' : '👤 MY PROFILE'; ?>
                     </a>
                 </div>
-                <a href="/logout" class="btn-pixel nav-btn-small btn-red" data-logout-open>LEAVE</a>
+                <a href="/logout" class="btn-pixel nav-btn-small btn-red" data-logout-open>🚪 LEAVE</a>
             <?php else: ?>
-                <a href="/login" class="nav-link-simple">SIGN IN</a>
-                <a href="/register" class="btn-pixel nav-btn-small btn-red">SIGN UP</a>
+                <a href="/login" class="nav-link-simple">🔑 SIGN IN</a>
+                <a href="/register" class="btn-pixel nav-btn-small btn-red">📜 SIGN UP</a>
             <?php endif; ?>
         </div>
     </div>
